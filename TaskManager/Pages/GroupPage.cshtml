@@ -1,0 +1,116 @@
+﻿@page
+@model TaskManager.Pages.GroupPageModel
+@{
+}
+
+@using Microsoft.AspNetCore.Http;
+@using TaskManagerDatabase;
+@using TaskManagerDatabase.Models;
+
+@{int groupId = HttpContext.Session.GetInt32("GroupId") ?? default (int); }
+@{Group group = new SqlGroupRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").FetchGroup(groupId);}
+    <div class="container" style="max-width: 960px;">
+        <h1 class="mb-4">@group.GroupName</h1>
+
+        <hr />
+
+        <h2 class="mb-3">Group Tasks</h2>
+        @{IReadOnlyList<TaskManagerDatabase.Models.Task> groupTasks = new SqlTaskRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").GetTasksByGroupId(groupId);}
+    <form method="post">
+        <div class="mb-3">
+            <button name="button" class="btn btn-outline-primary" value="addMember">Add Member</button>
+            <button name="button" class="btn btn-outline-success" value="addGroupTask">Add Group Task</button>
+        </div>
+
+        <div class="d-flex flex-wrap">
+            @foreach (TaskManagerDatabase.Models.Task t in groupTasks)
+            {
+                @if ((t.CompletedOn == null && t.RemovedOn == null))
+                {
+                    <div class="card mb-2 mr-2 text-left" style="width: 18em">
+                        <div class="card-body">
+                            <h4 class="card-title">@t.TaskTitle</h4>
+                            <h6 class="card-subtitle mb-2 text-muted">Due at @t.DueOn?.ToString("h:mmtt, MMMM d").Replace("AM", "am")</h6>
+                            <p class="card-text">@t.TaskContent</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-link text-danger float-right" name="button" value="delete @t.TaskId">Delete</button>
+                            <button class="btn btn-outline-success float-right" name="button" value="complete @t.TaskId">Complete</button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </form>
+
+        <hr />
+
+
+        <h2 class="mb-3">Your Tasks</h2>
+        @{int userId = HttpContext.Session.GetInt32("UserId") ?? default(int); }
+        @{ IReadOnlyList<TaskManagerDatabase.Models.Task> userTasks = new SqlTaskRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").GetTasksByUserId(userId); }
+        <form method="post">
+            <div class="mb-3">
+                <button name="button" class="btn btn-outline-success" value="addIndividualTask">Add Task</button>
+            </div>
+
+            <div class="d-flex flex-wrap">
+                @foreach (TaskManagerDatabase.Models.Task t in userTasks)
+                {
+                    @if (t.OwnerType == 3 && (t.CompletedOn == null && t.RemovedOn == null) && t.GroupId == groupId)
+                    {
+                        <div class="card mb-2 mr-2 text-left" style="width: 18em">
+                            <div class="card-body">
+                                <h4 class="card-title">@t.TaskTitle</h4>
+                                <h6 class="card-subtitle mb-2 text-muted">Due at @t.DueOn?.ToString("h:mmtt, MMMM d").Replace("AM", "am")</h6>
+                                <p class="card-text">@t.TaskContent</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-link text-danger float-right" name="button" value="delete @t.TaskId">Delete</button>
+                                <button class="btn btn-outline-success float-right" name="button" value="complete @t.TaskId">Complete</button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </form>
+
+        <h2 class="mb-3">Team Members </h2>
+        <!--foreach-->
+        @{IReadOnlyList<User> groupMembers = new SqlUserRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").GetUsersByGroupId(groupId); }
+        <form method="post">
+            @foreach (User groupMember in groupMembers)
+            {
+                if (groupMember.UserId != userId)
+                {
+                    <hr />
+
+                    <h3 class="mb-2">@groupMember.FirstName's Tasks</h3>
+                    <button name="button" class="btn btn-outline-success mb-3" value="addGroupMemberTask @groupMember.UserId">Add Task</button>
+
+                    IReadOnlyList<TaskManagerDatabase.Models.Task> groupMemberTasks = new SqlTaskRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").GetTasksByUserId(groupMember.UserId);
+
+                    <div class="d-flex flex-wrap">
+                        @foreach (TaskManagerDatabase.Models.Task t in groupMemberTasks)
+                        {
+                            @if (t.OwnerType == 3 && (t.CompletedOn == null && t.RemovedOn == null) && t.GroupId == groupId)
+                            {
+                                <div class="card mb-2 mr-2 text-left" style="width: 18em">
+                                    <div class="card-body">
+                                        <h4 class="card-title">@t.TaskTitle</h4>
+                                        <h6 class="card-subtitle mb-2 text-muted">Due at @t.DueOn?.ToString("h:mmtt, MMMM d").Replace("AM", "am")</h6>
+                                        <p class="card-text">@t.TaskContent</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-link text-danger float-right" name="button" value="delete @t.TaskId">Delete</button>
+                                        <button class="btn btn-outline-success float-right" name="button" value="complete @t.TaskId">Complete</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            }
+        </form>
+    </div>
+

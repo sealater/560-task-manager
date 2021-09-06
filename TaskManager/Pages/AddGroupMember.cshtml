@@ -1,0 +1,21 @@
+﻿@page
+@model TaskManager.Pages.AddGroupMemberModel
+@{
+}
+@using Microsoft.AspNetCore.Http;
+@using TaskManagerDatabase;
+@using TaskManagerDatabase.Models;
+
+@{int groupId = HttpContext.Session.GetInt32("GroupId") ?? default(int); }
+@{Group group = new SqlGroupRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").FetchGroup(groupId);}
+<div class="container" style="max-width: 540px;">
+    <form method="post" class="form-group">
+        <h4>Add group member to @group.GroupName</h4>
+        <h5>Enter username: </h5>
+        <input name="userName" class="form-control" style="max-width: 250px; margin-bottom: 10px;" />
+        <button name="button" class="btn btn-outline-primary" value="add">Add</button>
+        <button name="button" class="btn btn-outline-secondary" value="cancel">Cancel</button>
+    </form>
+
+    @TempData["error"]
+</div>

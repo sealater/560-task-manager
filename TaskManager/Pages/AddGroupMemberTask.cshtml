@@ -1,0 +1,24 @@
+﻿@page
+@model TaskManager.Pages.AddGroupMemberTaskModel
+@{
+}
+@using Microsoft.AspNetCore.Http;
+@using TaskManagerDatabase.Models;
+@using TaskManagerDatabase;
+    <div class="container text-center" style="max-width: 960px;">
+        @{ int memberId = HttpContext.Session.GetInt32("GroupMemberId") ?? default(int);}
+        @{ User member = new SqlUserRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").FetchUser(memberId);}
+        <h1>Create New Task for @member.FirstName</h1>
+        <form method="post">
+            <h3>Task Name:</h3>
+            <input class="form-control" name="taskName" style="max-width: 200px; margin: 0 auto 0 auto;" />
+            <h3>Description:</h3>
+            <input class="form-control" name="taskDescription" style="max-width: 540px; margin: 0 auto 0 auto;" />
+            <h3>Due Date:</h3>
+            <input type="date" name="date" class="form-control" style="max-width: 200px; margin: 0 auto 10px auto;" />
+            <button name="button" class="btn btn-light" value="add">Add</button>
+            <button name="button" class="btn btn-light" value="cancel">Cancel</button>
+        </form>
+
+        @TempData["error"] 
+    </div>

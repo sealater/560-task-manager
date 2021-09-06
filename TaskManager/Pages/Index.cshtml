@@ -1,0 +1,31 @@
+﻿@page
+@model TaskManager.Pages.LoginModel
+@{
+}
+
+
+<div class="container" style="max-width: 300px;">
+    <h1 class="mb-3">Login</h1>
+    <form method="post">
+        <div class="form-group">
+            <label>Username</label>
+            <input class="form-control" name="id" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password" />
+        </div>
+        <button type="submit" class="btn btn-outline-primary float-right">Login</button>
+    </form>
+    @TempData["error"]
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $(".navigationBar").hide();
+    });
+
+</script>
+

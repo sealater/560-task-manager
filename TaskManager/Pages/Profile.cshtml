@@ -1,0 +1,22 @@
+﻿@page
+@{
+}
+@using Microsoft.AspNetCore.Http;
+@using TaskManagerDatabase;
+@using TaskManagerDatabase.Models;
+<div class="jumbotron jumbotron-fluid" style="max-width: 540px; margin: 0 auto 0 auto;">
+    <div class="container" style="height: 540px;">
+        <h1 class="display-4" style="margin-bottom: 15px;">Profile</h1>
+
+
+        @{ int userId = HttpContext.Session.GetInt32("UserId") ?? default(int);}
+        @{ User user = new SqlUserRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").FetchUser(userId);}
+        <p class="lead">Username: <p class="lead"></p>
+        <a>@user.Username</a>
+        </p>
+
+        <p class="lead">Join Date: <p class="lead"></p>
+        <a>@user.JoinDate</a>
+        </p>
+    </div>
+</div>

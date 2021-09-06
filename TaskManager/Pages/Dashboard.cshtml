@@ -1,0 +1,47 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+@using Microsoft.AspNetCore.Http;
+@using TaskManagerDatabase;
+@using TaskManagerDatabase.Models;
+
+@{int userId = HttpContext.Session.GetInt32("UserId") ?? default(int); }
+@{IReadOnlyList<TaskManagerDatabase.Models.Task> userTasks = new SqlTaskRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").GetTasksByUserId(userId);}
+@{User user = new SqlUserRepository(@"Server=.\SQLEXPRESS; Database=model; Integrated Security=SSPI;").FetchUser(userId);}
+
+<div class="text-center container" style="max-width: 960px;">
+    <h1 class="display-4">@user.FirstName's Dashboard</h1>
+
+    <div class="user-tasks container">
+        <h2 class="mb-4">Your Tasks</h2>
+        <form method="post">
+            <h2><button name="button" class="btn btn-success btn-lg mb-4" value="addTask">Add Task</button></h2>
+        </form>
+        <form method="post">
+            <div class="d-flex flex-wrap">
+                @foreach (TaskManagerDatabase.Models.Task t in userTasks)
+                {
+                    if (t.CompletedOn == null && t.RemovedOn == null)
+                    {
+                        <div class="card mb-2 mr-2 text-left" style="width: 18em">
+                            <div class="card-body">
+                                <h4 class="card-title">@t.TaskTitle</h4>
+                                <h6 class="card-subtitle mb-2 text-muted">Due at @t.DueOn?.ToString("h:mmtt, MMMM d").Replace("AM", "am")</h6>
+                                <p class="card-text">@t.TaskContent</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-link text-danger float-right" name="button" value="delete @t.TaskId">Delete</button>
+                                <button class="btn btn-outline-success float-right" name="button" value="complete @t.TaskId">Complete</button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </form>
+    </div>
+
+
+
+</div>

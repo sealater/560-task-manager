@@ -1,0 +1,21 @@
+﻿@page
+@model TaskManager.Pages.CreateUserTaskModel
+@{
+}
+
+<div class="container text-center" style="max-width: 960px;">
+    <h1>Create New Task</h1>
+    <form method="post">
+        <h3>Task Name:</h3>
+        <input class="form-control" name="taskName" style="max-width: 200px; margin: 0 auto 0 auto;"/>
+        <h3>Description:</h3>
+        <input class="form-control" name="taskDescription"style="max-width: 540px; margin: 0 auto 0 auto;"/>
+        <h3>Due Date:</h3>
+        <input type="date" name="date" class="form-control" style="max-width: 200px; margin: 0 auto 10px auto;" />
+        <button name="button" class="btn btn-light" value="add">Add</button>
+        <button name="button" class="btn btn-light" value="cancel">Cancel</button>
+    </form>
+
+    @TempData["error"]
+</div>
+

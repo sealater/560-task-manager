@@ -1,0 +1,8 @@
+﻿CREATE OR ALTER PROCEDURE TaskManager.RemoveTask
+   @TaskId INT
+AS
+
+UPDATE TaskManager.Task
+SET RemovedOn = SYSDATETIMEOFFSET(),
+    UpdatedOn = SYSDATETIMEOFFSET()
+GO

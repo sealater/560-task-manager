@@ -1,0 +1,17 @@
+﻿@page
+@model TaskManager.Pages.CreateGroupModel
+@{
+}
+
+<div class="contianer" style="max-width: 540px; margin: 0 auto 0 auto;">
+    <h2 style="margin: 0 auto 24px auto;">Create Group</h2>
+    <form method="post" class="form-group" style="max-height: 300px;">
+        <h5>Enter Group Name:</h5>
+        <input name="groupName" class="form-control" style="margin-bottom: 15px;" />
+        <button name="button" value="create" class="btn btn-outline-primary" >Create</button>
+        <button name="button" value="cancel" class="btn btn-outline-secondary" >Cancel</button>
+
+    </form>
+
+    @TempData["error"]
+</div>
